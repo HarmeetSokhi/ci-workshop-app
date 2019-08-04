@@ -9,7 +9,7 @@ RUN apt-get update \
 WORKDIR /home/ci-workshop-app
 
 COPY requirements.txt /home/ci-workshop-app/requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY . /home/ci-workshop-app
 
@@ -35,7 +35,7 @@ RUN apt-get install -y gnupg \
   && curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
 COPY requirements-dev.txt /home/ci-workshop-app/requirements-dev.txt
-RUN pip install -r /home/ci-workshop-app/requirements-dev.txt
+RUN pip3 install -r /home/ci-workshop-app/requirements-dev.txt
 
 RUN git config --global credential.helper 'cache --timeout=36000'
 
