@@ -39,8 +39,10 @@ if settings.SHOULD_USE_MLFLOW:
     mlflow.set_tracking_uri(uri=f'http://{settings.MLFLOW_IP}:5000')
     if os.environ.get('CI', '') == 'true':
         mlflow.set_experiment('CI')
+        print ('mlflow: CI')
     else:
         mlflow.set_experiment('dev')
+        print ('mlflow: DEV')
 
     with mlflow.start_run() as run:
         # calculate evaluation metrics
