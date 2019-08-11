@@ -6,8 +6,8 @@ jobs:
       - image: circleci/python:3.6.1
     working_directory: ~/repo
     steps:
-      - checkout              # checkout source code
-      - restore_cache:        # load cache (to save time)
+      - checkout      # checkout source code
+      - restore_cache:   # load cache (to save time)
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
@@ -15,7 +15,7 @@ jobs:
       - run:
           name: install dependencies
           command: bin/install_dependencies.sh
-      - save_cache:           # save cache (to save time)
+      - save_cache:   # save cache (to save time)
           paths:
             - .venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
@@ -28,13 +28,42 @@ jobs:
       - run:
           name: run model metrics tests
           command: bin/test_model_metrics.sh
-      - persist_to_workspace:   # save artifact
+      - persist_to_workspace:
           root: .
           paths:
             - .
+  deploy_staging:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: deploy app to staging
+          command: bin/deploy_to_heroku.sh ci-workshop-app-hks-staging
+  deploy_prod:
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: deploy app to prod
+          command: bin/deploy_to_heroku.sh ci-workshop-app-hks-prod
+
 
 workflows:
   version: 2
   my_ci_pipeline:
     jobs:
       - train_and_test
+      - deploy_staging:
+          requires:
+            - train_and_test
+      - trigger_deploy:
+          type: approval
+          requires:
+            - deploy_staging
+      - deploy_prod:
+          requires:
+            - trigger_deploy
