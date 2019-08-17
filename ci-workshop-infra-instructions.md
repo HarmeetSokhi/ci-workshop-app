@@ -1,12 +1,8 @@
 Infrastructure
 ===================
 
-1. Create a gcp service account
-2. Create a service account and grant write access to Storage buckets. Download the API key (JSON)
-3. Run using Docker
 
-    export GCLOUD_SERVICE_KEY_ENC=$(cat <PATH_TO_SECRET_JSON> | base64)
-    export GCP_STORAGE_BUCKET=<GS_BUCKET_NAME> # exclude gs:// prefix
+Run using Docker
 
     docker pull arunma/mlflow-gcp
 
@@ -19,9 +15,15 @@ Infrastructure
     -p 5000:5000 \
     arunma/mlflow-gcp:latest
 
-4. Run using GCP
+Run using GCP
     
 
+    Create a gcp service account
+    Create a service account and grant write access to Storage buckets. Download the API key (JSON)
+
+    export GCLOUD_SERVICE_KEY_ENC=$(cat <PATH_TO_SECRET_JSON> | base64)
+    export GCP_STORAGE_BUCKET=<GS_BUCKET_NAME> # exclude gs:// prefix
+    
     gcloud container clusters create my-cluster --region australia-southeast1 --num-nodes 1
     gcloud container clusters get-credentials my-cluster --region australia-southeast1
 
